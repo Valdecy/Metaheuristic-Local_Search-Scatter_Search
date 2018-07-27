@@ -95,38 +95,8 @@ def plot_tour_coordinates (coordinates, city_tour):
     plt.plot(xy.iloc[1,0], xy.iloc[1,1], marker = 's', alpha = 1, markersize = 7, color = 'orange')
     return
 
-# Function: Selection
-#def roulette_wheel_tsp(reference_list):
-    #fitness = pd.DataFrame(np.zeros((len(reference_list), 2)), columns = ['Seed', 'Probability'])
-    #for i in range(0, fitness .shape[0]):
-        #fitness.iloc[i,0] = i
-        #fitness.iloc[i,1] = reference_list[i][1]
-    #for i in range(0, fitness.shape[0]):
-        #fitness.iloc[i,1] = 1/(1 + fitness.iloc[i,1])
-    #fit_sum = fitness.iloc[:,1].sum()
-    #for i in range(1, fitness.shape[0]):
-        #fitness.iloc[i,1] = (fitness.iloc[i,1] + fitness.iloc[i-1,1]) 
-    #for i in range(1, fitness.shape[0]):
-        #fitness.iloc[i,1] = fitness.iloc[i,1]/fit_sum       
-    #ix = 0
-    #iy = 0
-    #rand_1 = int.from_bytes(os.urandom(8), byteorder = "big") / ((1 << 64) - 1)
-    #for i in range(0, fitness.shape[0]):
-        #if (rand_1 <= fitness.iloc[i, 1]):
-          #ix = i
-          #iy = i
-          #break
-    #while (ix == iy):
-        #rand_2 = int.from_bytes(os.urandom(8), byteorder = "big") / ((1 << 64) - 1)
-        #for i in range(0, fitness.shape[0]):
-            #if (rand_2 <= fitness.iloc[i, 1]):
-              #iy = i
-              #break    
-    #return ix, iy
-
 # Function: Crossover
 def crossover_tsp(Xdata, reference_list, reverse_prob = 0.5, scramble_prob = 0.3):
-    #ix, iy = roulette_wheel_tsp(reference_list)
     ix, iy = random.sample(list(range(0,len(reference_list))), 2)
     parent_1 = reference_list[ix][0]
     parent_1 = parent_1[:-1]
@@ -154,23 +124,6 @@ def crossover_tsp(Xdata, reference_list, reverse_prob = 0.5, scramble_prob = 0.3
     child[0] = offspring
     child[1] = distance_calc(Xdata, child)
     return child
-
-# Function: Mutation 2_opt Stochastic
-#def mutation_tsp_2_opt_stochastic(Xdata, city_tour, mutation_prob = 0.1):
-    #rand = int.from_bytes(os.urandom(8), byteorder = "big") / ((1 << 64) - 1)
-    #city_list = copy.deepcopy(city_tour)
-    #if (rand < mutation_prob):
-        #best_route = copy.deepcopy(city_list)       
-        #m, n  = random.sample(range(0, len(city_tour[0])-1), 2)
-        #if (m > n):
-            #m, n = n, m
-        #best_route[0][m:n+1] = list(reversed(best_route[0][m:n+1]))           
-        #best_route[0][-1]  = best_route[0][0]              
-        #best_route[1] = distance_calc(Xdata, best_route)                     
-        #city_list[1] = copy.deepcopy(best_route[1])
-        #for k in range(0, len(city_list[0])): 
-            #city_list[0][k] = best_route[0][k]          
-    #return city_list
 
 # Function: Local Improvement 2_opt
 def local_search_2_opt(Xdata, city_tour):
@@ -200,9 +153,7 @@ def scatter_search(Xdata, city_tour, iterations = 50, reference_size = 25, rever
     while (count < iterations):            
         candidate_list = []
         for i in range(0, reference_size):
-            candidate_list.append(crossover_tsp(Xdata, reference_list = reference_list, reverse_prob = reverse_prob, scramble_prob = scramble_prob))   
-        #for i in range(0, reference_size):
-            #candidate_list[i] = mutation_tsp_2_opt_stochastic(Xdata, city_tour = candidate_list[i], mutation_prob = mutation_prob)        
+            candidate_list.append(crossover_tsp(Xdata, reference_list = reference_list, reverse_prob = reverse_prob, scramble_prob = scramble_prob))          
         for i in range(0, reference_size):
             candidate_list[i] = local_search_2_opt(Xdata, city_tour = candidate_list[i])
         for i in range(0, reference_size):        
