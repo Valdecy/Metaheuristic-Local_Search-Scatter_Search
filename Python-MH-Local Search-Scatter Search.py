@@ -148,8 +148,7 @@ def scatter_search(Xdata, city_tour, iterations = 50, reference_size = 25, rever
     best_solution = copy.deepcopy(city_tour)
     reference_list = []
     for i in range(0, reference_size):
-        reference_list.append(seed_function(Xdata))
-    
+        reference_list.append(seed_function(Xdata))    
     while (count < iterations):            
         candidate_list = []
         for i in range(0, reference_size):
