@@ -25,14 +25,14 @@ def distance_calc(Xdata, city_tour):
     distance = 0
     for k in range(0, len(city_tour[0])-1):
         m = k + 1
-        distance = distance + Xdata.iloc[city_tour[0][k]-1, city_tour[0][m]-1]            
+        distance = distance + Xdata[city_tour[0][k]-1, city_tour[0][m]-1]            
     return distance
 
 # Function: Euclidean Distance 
 def euclidean_distance(x, y):       
     distance = 0
     for j in range(0, len(x)):
-        distance = (x.iloc[j] - y.iloc[j])**2 + distance   
+        distance = (x[j] - y[j])**2 + distance   
     return distance**(1/2) 
 
 # Function: Initial Seed
@@ -46,53 +46,51 @@ def seed_function(Xdata):
 
 # Function: Build Distance Matrix
 def buid_distance_matrix(coordinates):
-    Xdata = pd.DataFrame(np.zeros((coordinates.shape[0], coordinates.shape[0])))
+    Xdata = np.zeros((coordinates.shape[0], coordinates.shape[0]))
     for i in range(0, Xdata.shape[0]):
         for j in range(0, Xdata.shape[1]):
             if (i != j):
-                x = coordinates.iloc[i,:]
-                y = coordinates.iloc[j,:]
-                Xdata.iloc[i,j] = euclidean_distance(x, y)        
+                x = coordinates[i,:]
+                y = coordinates[j,:]
+                Xdata[i,j] = euclidean_distance(x, y)        
     return Xdata
 
 # Function: Tour Plot
 def plot_tour_distance_matrix (Xdata, city_tour):
-    m = Xdata.copy(deep = True)
+    m = np.copy(Xdata)
     for i in range(0, Xdata.shape[0]):
         for j in range(0, Xdata.shape[1]):
-            m.iloc[i,j] = (1/2)*(Xdata.iloc[0,j]**2 + Xdata.iloc[i,0]**2 - Xdata.iloc[i,j]**2)    
-    m = m.values
+            m[i,j] = (1/2)*(Xdata[0,j]**2 + Xdata[i,0]**2 - Xdata[i,j]**2)    
     w, u = np.linalg.eig(np.matmul(m.T, m))
     s = (np.diag(np.sort(w)[::-1]))**(1/2) 
     coordinates = np.matmul(u, s**(1/2))
     coordinates = coordinates.real[:,0:2]
-    xy = pd.DataFrame(np.zeros((len(city_tour[0]), 2)))
+    xy = np.zeros((len(city_tour[0]), 2))
     for i in range(0, len(city_tour[0])):
         if (i < len(city_tour[0])):
-            xy.iloc[i, 0] = coordinates[city_tour[0][i]-1, 0]
-            xy.iloc[i, 1] = coordinates[city_tour[0][i]-1, 1]
+            xy[i, 0] = coordinates[city_tour[0][i]-1, 0]
+            xy[i, 1] = coordinates[city_tour[0][i]-1, 1]
         else:
-            xy.iloc[i, 0] = coordinates[city_tour[0][0]-1, 0]
-            xy.iloc[i, 1] = coordinates[city_tour[0][0]-1, 1]
-    plt.plot(xy.iloc[:,0], xy.iloc[:,1], marker = 's', alpha = 1, markersize = 7, color = 'black')
-    plt.plot(xy.iloc[0,0], xy.iloc[0,1], marker = 's', alpha = 1, markersize = 7, color = 'red')
-    plt.plot(xy.iloc[1,0], xy.iloc[1,1], marker = 's', alpha = 1, markersize = 7, color = 'orange')
+            xy[i, 0] = coordinates[city_tour[0][0]-1, 0]
+            xy[i, 1] = coordinates[city_tour[0][0]-1, 1]
+    plt.plot(xy[:,0], xy[:,1], marker = 's', alpha = 1, markersize = 7, color = 'black')
+    plt.plot(xy[0,0], xy[0,1], marker = 's', alpha = 1, markersize = 7, color = 'red')
+    plt.plot(xy[1,0], xy[1,1], marker = 's', alpha = 1, markersize = 7, color = 'orange')
     return
 
 # Function: Tour Plot
 def plot_tour_coordinates (coordinates, city_tour):
-    coordinates = coordinates.values
-    xy = pd.DataFrame(np.zeros((len(city_tour[0]), 2)))
+    xy = np.zeros((len(city_tour[0]), 2))
     for i in range(0, len(city_tour[0])):
         if (i < len(city_tour[0])):
-            xy.iloc[i, 0] = coordinates[city_tour[0][i]-1, 0]
-            xy.iloc[i, 1] = coordinates[city_tour[0][i]-1, 1]
+            xy[i, 0] = coordinates[city_tour[0][i]-1, 0]
+            xy[i, 1] = coordinates[city_tour[0][i]-1, 1]
         else:
-            xy.iloc[i, 0] = coordinates[city_tour[0][0]-1, 0]
-            xy.iloc[i, 1] = coordinates[city_tour[0][0]-1, 1]
-    plt.plot(xy.iloc[:,0], xy.iloc[:,1], marker = 's', alpha = 1, markersize = 7, color = 'black')
-    plt.plot(xy.iloc[0,0], xy.iloc[0,1], marker = 's', alpha = 1, markersize = 7, color = 'red')
-    plt.plot(xy.iloc[1,0], xy.iloc[1,1], marker = 's', alpha = 1, markersize = 7, color = 'orange')
+            xy[i, 0] = coordinates[city_tour[0][0]-1, 0]
+            xy[i, 1] = coordinates[city_tour[0][0]-1, 1]
+    plt.plot(xy[:,0], xy[:,1], marker = 's', alpha = 1, markersize = 7, color = 'black')
+    plt.plot(xy[0,0], xy[0,1], marker = 's', alpha = 1, markersize = 7, color = 'red')
+    plt.plot(xy[1,0], xy[1,1], marker = 's', alpha = 1, markersize = 7, color = 'orange')
     return
 
 # Function: Crossover
@@ -148,7 +146,7 @@ def scatter_search(Xdata, city_tour, iterations = 50, reference_size = 25, rever
     best_solution = copy.deepcopy(city_tour)
     reference_list = []
     for i in range(0, reference_size):
-        reference_list.append(seed_function(Xdata))    
+        reference_list.append(seed_function(Xdata))   
     while (count < iterations):            
         candidate_list = []
         for i in range(0, reference_size):
@@ -169,13 +167,33 @@ def scatter_search(Xdata, city_tour, iterations = 50, reference_size = 25, rever
 
 ######################## Part 1 - Usage ####################################
 
-X = pd.read_csv('Python-MH-Local Search-Scatter Search-Dataset-01.txt', sep = '\t') # 17 cities = 1922.33
-seed = seed_function(X)
-lsss = scatter_search(X, city_tour = seed, iterations = 50, reference_size = 15, reverse_prob = 0.5, scramble_prob = 0.3)
-plot_tour_distance_matrix(X, lsss) # Red Point = Initial city; Orange Point = Second City # The generated coordinates (2D projection) are aproximated, depending on the data, the optimum tour may present crosses.
+# Load File - A Distance Matrix (17 cities,  optimal = 1922.33)
+X = pd.read_csv('Python-MH-Local Search-Scatter Search-Dataset-01.txt', sep = '\t') 
+X = X.values
 
-Y = pd.read_csv('Python-MH-Local Search-Scatter Search-Dataset-02.txt', sep = '\t') # Berlin 52 = 7544.37
-X = buid_distance_matrix(Y)
+# Start a Random Seed
 seed = seed_function(X)
+
+# Call the Function
+lsss = scatter_search(X, city_tour = seed, iterations = 50, reference_size = 15, reverse_prob = 0.5, scramble_prob = 0.3)
+
+# Plot Solution. Red Point = Initial city; Orange Point = Second City # The generated coordinates (2D projection) are aproximated, depending on the data, the optimum tour may present crosses
+plot_tour_distance_matrix(X, lsss)
+
+######################## Part 2 - Usage ####################################
+
+# Load File - Coordinates (Berlin 52,  optimal = 7544.37)
+Y = pd.read_csv('Python-MH-Local Search-Scatter Search-Dataset-02.txt', sep = '\t') 
+Y = Y.values
+
+# Build the Distance Matrix
+X = buid_distance_matrix(Y)
+
+# Start a Random Seed
+seed = seed_function(X)
+
+# Call the Function
 lsss = scatter_search(X, city_tour = seed, iterations = 150, reference_size = 10, reverse_prob = 0.5, scramble_prob = 0.5)
-plot_tour_coordinates (Y, lsss) # Red Point = Initial city; Orange Point = Second City
+
+# Plot Solution. Red Point = Initial city; Orange Point = Second City
+plot_tour_coordinates(Y, lsss)
