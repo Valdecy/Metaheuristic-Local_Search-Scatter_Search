@@ -45,7 +45,6 @@ def seed_function(Xdata):
     return seed
 
 # Function: Build Distance Matrix
-# Function: Build Distance Matrix
 def build_distance_matrix(coordinates):
    a = coordinates
    b = a.reshape(np.prod(a.shape[:-1]), 1, a.shape[-1])
